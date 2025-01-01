@@ -1,0 +1,28 @@
+# python generated files
+__pycache__/
+*.py[oc]
+build/
+dist/
+wheels/
+*.egg-info
+
+# venv
+.venv
+
+# cache
+.pytest_cache/
+.ruff_cache/
+.mypy_cache/
+
+# env
+.env
+
+# log
+*.log
+
+# Mac
+.DS_Store
+
+# data
+bookmark.csv
+*.zip
