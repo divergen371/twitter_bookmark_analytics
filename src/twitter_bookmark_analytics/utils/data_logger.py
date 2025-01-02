@@ -38,6 +38,11 @@ TECH_KEYWORDS = [
     "エンジニア",
     "コード",
     "セキュリティ",
+    "機械学習",
+    "クラウド",
+    "クラウドコンピューティング",
+    "キャリア",
+    "セキュリティ対策"
 ]
 
 
@@ -59,8 +64,33 @@ def load_data(file_path: str | Path) -> pd.DataFrame:
     """
     logger.info("データファイルを読み込みます: %s", file_path)
 
+    # まずヘッダー行のみを読み込んで必須カラムの存在を確認
     try:
-        bookmark_df = pd.read_csv(file_path)
+        header_df = pd.read_csv(file_path, nrows=0)
+        missing_columns = [col for col in REQUIRED_COLUMNS if col not in header_df.columns]
+        if missing_columns:
+            # 必須カラムが不足している場合はParserErrorを発生させる
+            raise pd.errors.ParserError(f"必須カラムが不足しています: {', '.join(missing_columns)}")
+    except pd.errors.EmptyDataError:
+        logger.exception("ファイルが空です: %s", file_path)
+        raise
+    except pd.errors.ParserError:
+        logger.exception("ファイルの形式が不正です")
+        raise
+    except FileNotFoundError:
+        logger.exception("ファイルが見つかりません: %s", file_path)
+        raise
+    except Exception as e:
+        logger.exception("ファイルの解析中にエラーが発生しました")
+        raise pd.errors.ParserError(str(e)) from e
+
+    try:
+        # 全データを読み込む
+        bookmark_df = pd.read_csv(
+            file_path,
+            on_bad_lines='error',
+            delimiter=','
+        )
     except FileNotFoundError:
         logger.exception("ファイルが見つかりません: %s", file_path)
         raise
@@ -73,13 +103,6 @@ def load_data(file_path: str | Path) -> pd.DataFrame:
     except Exception:
         logger.exception("予期せぬエラーが発生しました")
         raise
-
-    # 必須カラムの存在確認
-    missing_columns = [col for col in REQUIRED_COLUMNS if col not in bookmark_df.columns]
-    if missing_columns:
-        error_msg = f"必須カラムが不足しています: {', '.join(missing_columns)}"
-        logger.error(error_msg)
-        raise ValueError(error_msg)
 
     try:
         bookmark_df["tweeted_at"] = pd.to_datetime(bookmark_df["tweeted_at"])
@@ -102,11 +125,11 @@ def categorize_tech(text: str) -> str:
         str: カテゴリ("テクノロジー" または "その他")
 
     """
-    if pd.isna(text):
-        logger.debug("テキストが空値です")
-        return "その他"
     if not isinstance(text, str):
         logger.warning("テキストが文字列ではありません: %s", type(text))
+        return "その他"
+    if pd.isna(text):
+        logger.debug("テキストが空値です")
         return "その他"
 
     text_lower = text.lower()

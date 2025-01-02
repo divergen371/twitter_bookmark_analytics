@@ -35,7 +35,7 @@ def validate_dataframe(df: pd.DataFrame, required_columns: list[str]) -> None:
     """
     if not isinstance(df, pd.DataFrame):
         raise TypeError("入力はpandas.DataFrameである必要があります")
-    
+
     missing_columns = [col for col in required_columns if col not in df.columns]
     if missing_columns:
         raise ValueError(f"必要なカラムが存在しません: {missing_columns}")
@@ -136,14 +136,7 @@ def get_top_words(texts: list[str] | pd.Series, n: int = 50, tech_only: bool = F
     logger.info("頻出単語分析を開始(上位%d件)", n)
 
     try:
-        # def _validate_input(texts: list[str] | pd.Series) -> None:
-        #     """入力の型と長さを検証する内部関数."""
-        #     if len(texts) == 0:
-        #         error_msg = "入力テキストが空です"
-        #         raise ValueError(error_msg)
 
-        #     if not isinstance(texts, (list, pd.Series)):
-        #         raise TypeError
         def _validate_input(texts: list[str] | pd.Series) -> None:
             """入力の型と長さを検証する内部関数."""
             if not isinstance(texts, (list, pd.Series)):
