@@ -118,7 +118,7 @@ def create_category_plot(df: pd.DataFrame) -> go.Figure:
         return fig
 
 
-def get_top_words(texts: list[str] | pd.Series, n: int = 50, tech_only: bool = False) -> dict[str, int]:
+def get_top_words(texts: list[str] | pd.Series, n: int = 50, *, tech_only: bool = False) -> dict[str, int]:
     """テキストから最も頻出する単語を抽出する.
 
     Args:
