@@ -42,8 +42,9 @@ def sample_bookmark_data(tmp_path):
 
 def test_main_with_valid_data(mock_streamlit, sample_bookmark_data, monkeypatch):
     """正常なデータでアプリケーションが動作することを確認するテスト"""
-    # __file__の値を一時的に変更
-    monkeypatch.setattr(Path, "__file__", sample_bookmark_data)
+    # app.pyの__file__属性を一時的に変更
+    import twitter_bookmark_analytics.app as app
+    monkeypatch.setattr(app, "__file__", str(sample_bookmark_data.parent / "app.py"))
     
     try:
         main()
@@ -54,7 +55,8 @@ def test_main_with_valid_data(mock_streamlit, sample_bookmark_data, monkeypatch)
 def test_main_with_missing_data(mock_streamlit, tmp_path, monkeypatch):
     """データファイルが存在しない場合のテスト"""
     non_existent_path = tmp_path / "non_existent.csv"
-    monkeypatch.setattr(Path, "__file__", str(non_existent_path))
+    import twitter_bookmark_analytics.app as app
+    monkeypatch.setattr(app, "__file__", str(non_existent_path.parent / "app.py"))
     
     # エラーが発生せずに処理が終了することを確認
     main()
@@ -64,7 +66,8 @@ def test_main_with_empty_data(mock_streamlit, tmp_path, monkeypatch):
     """空のデータファイルの場合のテスト"""
     empty_file = tmp_path / "empty.csv"
     empty_file.write_text("")
-    monkeypatch.setattr(Path, "__file__", str(empty_file))
+    import twitter_bookmark_analytics.app as app
+    monkeypatch.setattr(app, "__file__", str(empty_file.parent / "app.py"))
     
     # エラーが発生せずに処理が終了することを確認
     main()
@@ -74,7 +77,8 @@ def test_main_with_invalid_data(mock_streamlit, tmp_path, monkeypatch):
     """不正なデータファイルの場合のテスト"""
     invalid_file = tmp_path / "invalid.csv"
     invalid_file.write_text("invalid,csv,format\n1,2")
-    monkeypatch.setattr(Path, "__file__", str(invalid_file))
+    import twitter_bookmark_analytics.app as app
+    monkeypatch.setattr(app, "__file__", str(invalid_file.parent / "app.py"))
     
     # エラーが発生せずに処理が終了することを確認
     main()
@@ -89,7 +93,8 @@ def test_main_with_missing_columns(mock_streamlit, tmp_path, monkeypatch):
         # full_textカラムが欠落
     })
     df.to_csv(missing_columns_file, index=False)
-    monkeypatch.setattr(Path, "__file__", str(missing_columns_file))
+    import twitter_bookmark_analytics.app as app
+    monkeypatch.setattr(app, "__file__", str(missing_columns_file.parent / "app.py"))
     
     # エラーが発生せずに処理が終了することを確認
     main()
