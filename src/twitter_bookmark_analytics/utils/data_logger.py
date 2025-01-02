@@ -105,9 +105,14 @@ def load_data(file_path: str | Path) -> pd.DataFrame:
         raise
 
     try:
+        # 日時データの変換
         bookmark_df["tweeted_at"] = pd.to_datetime(bookmark_df["tweeted_at"])
+        
+        # テキストデータを文字列型に変換
+        bookmark_df["full_text"] = bookmark_df["full_text"].astype(str)
+        bookmark_df["screen_name"] = bookmark_df["screen_name"].astype(str)
     except Exception as e:
-        error_msg = f"日時データの変換に失敗しました: {e}"
+        error_msg = "日時データの変換に失敗しました"
         logger.exception(error_msg)
         raise ValueError(error_msg) from e
 
