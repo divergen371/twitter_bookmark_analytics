@@ -14,9 +14,10 @@ import plotly.graph_objects as go
 from nltk.corpus import stopwords
 
 # NLTKのデータディレクトリを設定
-nltk_data_path = Path("nltk_data").resolve
-os.environ["NLTK_DATA"] = str(nltk_data_path)
-nltk.data.path = [str(nltk_data_path)]  # 他のパスを上書きして、このパスのみを使用
+current_dir = Path(__file__).parent.parent.parent.parent
+nltk_data_path = current_dir / "nltk_data"
+os.environ["NLTK_DATA"] = str(nltk_data_path.resolve())
+nltk.data.path = [str(nltk_data_path.resolve())]  # 他のパスを上書きして、このパスのみを使用
 
 logger = logging.getLogger(__name__)
 
