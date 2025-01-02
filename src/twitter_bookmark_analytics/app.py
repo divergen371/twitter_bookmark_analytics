@@ -134,7 +134,7 @@ def main():
     tech_only = st.checkbox("テクノロジー関連用語のみを表示", value=False)
     try:
         top_words = get_top_words(filtered_df["full_text"], tech_only=tech_only)
-        title = "頻出ワード（テクノロジー関連用語のみ）" if tech_only else "頻出ワード"
+        title = "頻出ワード(テクノロジー関連用語のみ)" if tech_only else "頻出ワード"
         fig = px.bar(x=list(top_words.keys()), y=list(top_words.values()), title=title)
         fig.update_layout(xaxis_title="単語", yaxis_title="出現回数", xaxis={"tickangle": 45})
         st.plotly_chart(fig)
